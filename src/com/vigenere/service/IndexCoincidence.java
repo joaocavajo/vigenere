@@ -4,7 +4,6 @@ import java.util.List;
 
 public class IndexCoincidence {
 
-
     public double calculate(int occurrence, int textSize) {
         return (double) (occurrence * (occurrence - 1)) / (textSize * (textSize - 1));
     }

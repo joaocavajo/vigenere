@@ -48,17 +48,16 @@ public class TextService {
         return valueOf(recurredCharacter);
     }
 
-    public String quebrarEmStringPosicaoPorPosicao(List<String> lista, int keySize, int posicao) {
-        return lista.stream()
+    public String mergeColumn(List<String> dividedText, int keySize, int position) {
+        return dividedText.stream()
                 .map(l -> {
                     if (l.length() == keySize) {
-                        return valueOf(l.charAt(posicao));
+                        return valueOf(l.charAt(position));
                     } else {
                         return "";
                     }
                 })
                 .collect(Collectors.joining(""));
     }
-
 
 }

@@ -11,7 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
         var file = new FileService();
-        var text = file.readFile("file2.txt");
+        var text = file.readFile("file1.txt");
 
         var index = new IndexCoincidence();
         var alphabet = new Alphabet();

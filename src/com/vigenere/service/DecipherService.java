@@ -26,52 +26,56 @@ public class DecipherService {
         var MAX_KEY_SIZE = 10;
         var averageKey = new HashMap<Integer, Double>();
 
-        for(int i = 1; i <= MAX_KEY_SIZE; i++) {
+        for (int i = 1; i <= MAX_KEY_SIZE; i++) {
 
-            var listinha = new ArrayList<Double>();
+            var averageFrequencies = new ArrayList<Double>();
 
-            for(int k = 0; k < i; k++) {
+            for (int k = 0; k < i; k++) {
                 var alphabetFrequency = new HashMap<Character, Integer>();
-                var pulo = 0;
-                for (int j = k; j < textSize; j = j + i) {
-                    pulo = i;
-                    var key = text.charAt(j);
+                var position = 0;
 
+                for (int j = k; j < textSize; j = j + i) {
+                    position = i;
+                    var key = text.charAt(j);
                     alphabetFrequency.merge(key, 1, Integer::sum);
                 }
-                var divisao = pulo;
-                var listx = alphabetFrequency.values()
+
+                var keyPosition = position;
+                var positionFrequencies = alphabetFrequency.values()
                         .stream()
-                        .map(a -> indexCoincidence.calculate(a, textSize / divisao))
+                        .map(a -> indexCoincidence.calculate(a, textSize / keyPosition))
                         .collect(toList());
 
-                listinha.add(indexCoincidence.calculate(listx));
+                averageFrequencies.add(indexCoincidence.calculate(positionFrequencies));
             }
-            averageKey.put(i, indexCoincidence.calculate(listinha) / listinha.size());
+            averageKey.put(i, indexCoincidence.calculate(averageFrequencies) / averageFrequencies.size());
         }
 
         return findKey(averageKey);
     }
 
-    //https://www.sanfoundry.com/java-program-implement-vigenere-cypher/
+    /**
+     * This method was found in
+     * https://www.sanfoundry.com/java-program-implement-vigenere-cypher/
+     */
     public String decrypt(String text, String key) {
-        StringBuilder res = new StringBuilder();
+        var decipheredText = new StringBuilder();
         for (int i = 0, j = 0; i < text.length(); i++) {
             var c = text.charAt(i);
             if (c < 'a' || c > 'z')
                 continue;
-            res.append((char) ((c - key.charAt(j) + 26) % 26 + 'a'));
+            decipheredText.append((char) ((c - key.charAt(j) + 26) % 26 + 'a'));
             j = ++j % key.length();
         }
-        return res.toString();
+        return decipheredText.toString();
     }
 
     private int findKey(HashMap<Integer, Double> averageKey) {
         double closestValue = calculateIndex(averageKey.get(1));
         int currentKey = 0;
-        for(Integer key: averageKey.keySet()){
+        for (Integer key : averageKey.keySet()) {
             var closeToLanguageIndex = calculateIndex(averageKey.get(key));
-            if(closeToLanguageIndex < closestValue) {
+            if (closeToLanguageIndex < closestValue) {
                 closestValue = closeToLanguageIndex;
                 currentKey = key;
             }
@@ -89,21 +93,19 @@ public class DecipherService {
         var secretKey = new StringBuilder();
 
         for (int i = 0; i < keySize; i++) {
-            var textColumn = textService.quebrarEmStringPosicaoPorPosicao(dividedTextByKeySize, keySize, i);
+            var textColumn = textService.mergeColumn(dividedTextByKeySize, keySize, i);
 
-            //juntar outras
-            var chara = textService.findMostRecurringCharacter(textColumn);
+            var recurredCharacter = textService.findMostRecurringCharacter(textColumn);
 
-            var teste = 0;
+            var shiftedCharacter = 0;
             if (i != 0 && i != keySize - 1) {
-                teste = (alphabet.getIndex(chara) - alphabet.getIndex("e") + 26) % 26;
+                shiftedCharacter = (alphabet.getIndex(recurredCharacter) - alphabet.getIndex("e") + 26) % 26;
             } else {
-                teste = (alphabet.getIndex(chara) - alphabet.getIndex("a") + 26) % 26;
+                shiftedCharacter = (alphabet.getIndex(recurredCharacter) - alphabet.getIndex("a") + 26) % 26;
             }
 
-            var letra2 = alphabet.getLetter(teste);
-
-            secretKey.append(letra2);
+            var realLetter = alphabet.getLetter(shiftedCharacter);
+            secretKey.append(realLetter);
         }
 
         return secretKey.toString();
