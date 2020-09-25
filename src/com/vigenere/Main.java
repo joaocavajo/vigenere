@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
         var file = new FileService();
-        var text = file.readFile("cipher2.txt");
+        var text = file.readFile("file2.txt");
 
         var index = new IndexCoincidence();
         var alphabet = new Alphabet();
