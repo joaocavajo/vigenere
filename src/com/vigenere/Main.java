@@ -7,11 +7,14 @@ import com.vigenere.service.IndexCoincidence;
 import com.vigenere.service.PrinterService;
 import com.vigenere.service.TextService;
 
+/**
+ * @author João Vitor Brasil
+ */
 public class Main {
 
     public static void main(String[] args) {
         var file = new FileService();
-        var text = file.readFile("file1.txt");
+        var text = file.readFile("cipher2.txt");
 
         var index = new IndexCoincidence();
         var alphabet = new Alphabet();
